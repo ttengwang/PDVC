@@ -1,0 +1,11 @@
+h5py
+matplotlib
+numpy
+pandas
+Pillow
+PyYAML
+six
+tqdm
+tensorboardX
+colorlog
+scipy
