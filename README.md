@@ -1,7 +1,7 @@
 # PDVC
 Code for End-to-End Dense Video Captioning with Parallel Decoding (ICCV 2021) [[arxiv](https://arxiv.org/abs/2108.07781)]
 
-![pdvc.png](pdvc.png)
+![pdvc.png](pdvc.jpg)
 
 
 # Preparation
@@ -62,6 +62,7 @@ python eval.py --eval_folder $eval_folder --eval_transformer_input_type gt_propo
 |  Model | Features |   Url   | Recall |Precision|    BLEU4   | METEOR2018 | METEOR2021 |  CIDEr | SODA_c | Para METEOR |
 |  ----  |  ----    |   ----  |  ----   |  ----  |   ----  |  ----  |  ----  |  ----  | ---- | ---- |
 | PDVC   | TSN  | [Google Drive](https://drive.google.com/drive/folders/1v2Xj0Qjt3Te_SgVyySKEofRaZsSw_rjs?usp=sharing)  |  56.21   |  57.46  | 1.92  |  8.00  |  8.63 | 29.00  |  5.68  | 15.85 |
+
 Some notes:
 * In the paper, we foloow the most previous methods to use the [evaluation tookit in ActivityNet Challenge 2018](https://github.com/ranjaykrishna/densevid_eval/tree/deba7d7e83012b218a4df888f6c971e21cfeea33). Note that the latest [evluation tookit](https://github.com/ranjaykrishna/densevid_eval/tree/9d4045aced3d827834a5d2da3c9f0692e3f33c1c) (METEOR2021) gives a higher score.
 * PARA METEOR ar evaluated on the ActivityNet ae-val set, while others are on standard validation set.
