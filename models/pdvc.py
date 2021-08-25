@@ -524,12 +524,8 @@ class PostProcess(nn.Module):
         boxes = boxes * scale_fct[:, None, :]
         seq = outputs['seq']  # [batch_size, num_queries, max_Cap_len=30]
         cap_prob = outputs['caption_probs']['cap_prob_eval']  # [batch_size, num_queries]
+        eseq_lens = outputs['pred_count'].argmax(dim=-1).clamp(min=1)
 
-        if self.opt.count_loss_type == 'regression':
-            eseq_lens = torch.round(outputs['pred_count']).int()[:, 0] + 2
-        elif self.opt.count_loss_type == 'classification':
-            eseq_lens = outputs['pred_count'].argmax(dim=-1).clamp(min=1)
-        # print(eseq_lens.shape, eseq_lens)
         if len(seq):
             mask = (seq > 0).float()
             # cap_scores = (mask * cap_prob).sum(2).cpu().numpy().astype('float') / (
@@ -588,11 +584,11 @@ def build(args):
     weight_dict = {'loss_ce': args.cls_loss_coef,
                    'loss_bbox': args.bbox_loss_coef,
                    'loss_giou': args.giou_loss_coef,
-                   'loss_length': args.count_loss_coef,
+                   'loss_counter': args.count_loss_coef,
                    'loss_caption': args.caption_loss_coef,
                    }
 
-    # TODO this is a hack 
+    # TODO this is a hack
     if args.aux_loss:
         aux_weight_dict = {}
         for i in range(args.dec_layers - 1):
@@ -600,8 +596,6 @@ def build(args):
         weight_dict.update(aux_weight_dict)
 
     losses = ['labels', 'boxes', 'cardinality']
-    if args.masks:
-        losses += ["masks"]
 
     criterion = SetCriterion(args.num_classes, matcher, weight_dict, losses, focal_alpha=args.focal_alpha,
                              focal_gamma=args.focal_gamma, opt=args)

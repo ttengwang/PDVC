@@ -7,16 +7,16 @@ import numpy as np
 def parse_opts():
     parser = argparse.ArgumentParser()
 
-    # ID of this run
+    # configure of this run
     parser.add_argument('--cfg_path', type=str, required=True, help='config file')
-    parser.add_argument('--id', type=str, default='', help='id of this run')
+    parser.add_argument('--id', type=str, default='', help='id of this run. Results and logs will saved in this folder ./save/id')
     parser.add_argument('--gpu_id', type=str, nargs='+', default=[])
     parser.add_argument('--disable_tqdm', action='store_true')
     parser.add_argument('--seed', type=int, default=777)
-    parser.add_argument('--wait_min', type=int, default=0)
     parser.add_argument('--random_seed', type=int, default=0)
     parser.add_argument('--disable_cudnn', type=int, default=0, help='disable cudnn may solve some unknown bugs')
     parser.add_argument('--debug', action='store_true', help='using mini-dataset for fast debugging')
+    parser.add_argument('--device', default='cuda', choices=['cpu', 'cuda'], help='device to use for training / testing')
 
     #  ***************************** INPUT DATA PATH *****************************
     parser.add_argument('--train_caption_file', type=str,
@@ -28,7 +28,6 @@ def parse_opts():
     parser.add_argument('--gt_file_for_eval', type=str, nargs='+', default=['data/anet/captiondata/val_1.json', 'data/anet/captiondata/val_2.json'])
     parser.add_argument('--gt_file_for_para_eval', type=str, nargs='+', default= ['data/anet/captiondata/para/anet_entities_val_1_para.json', 'data/anet/captiondata/para/anet_entities_val_2_para.json'])
     parser.add_argument('--dict_file', type=str, default='data/anet/vocabulary_activitynet.json', help='')
-    parser.add_argument('--cached_tokens', type=str, default='activitynet_train_ngrams_for_cider-idxs')
 
 
     parser.add_argument('--visual_feature_type', type=str, default='c3d', choices=['c3d', 'resnet_bn', 'resnet'])
@@ -109,10 +108,6 @@ def parse_opts():
     parser.add_argument('--learning_rate_decay_start', type=float, default=8)
     parser.add_argument('--learning_rate_decay_every', type=float, default=3)
     parser.add_argument('--learning_rate_decay_rate', type=float, default=0.5)
-    parser.add_argument('--drop_rate_increase_start', type=float, default=0)
-    parser.add_argument('--drop_rate_increase_every', type=float, default=2)
-    parser.add_argument('--drop_rate_increase_value', type=float, default=0)
-    parser.add_argument('--drop_rate_max', type=float, default=0.1)
 
     #  ***************************** SAVING AND LOGGING *****************************
     parser.add_argument('--min_epoch_when_save', type=int, default=-1)
@@ -122,12 +117,10 @@ def parse_opts():
 
     #  ***************************** For Deformable DETR *************************************
     parser.add_argument('--lr_backbone_names', default=["None"], type=str, nargs='+')
-    parser.add_argument('--lr_captioner_names', default=["caption_head"], type=str, nargs='+')
     parser.add_argument('--lr_backbone', default=2e-5, type=float)
     parser.add_argument('--lr_proj', default=0, type=int)
     parser.add_argument('--lr_linear_proj_names', default=['reference_points', 'sampling_offsets'], type=str, nargs='+')
     parser.add_argument('--lr_linear_proj_mult', default=0.1, type=float)
-    parser.add_argument('--non_caption_lr_mult', default=1, type=float)
 
     # Variants of Deformable DETR
     parser.add_argument('--with_box_refine', default=False, action='store_true')
@@ -158,14 +151,9 @@ def parse_opts():
     parser.add_argument('--cap_num_feature_levels', default=4, type=int)
     parser.add_argument('--disable_mid_caption_heads', action='store_true')
     parser.add_argument('--soft_attention', action='store_true')
-    parser.add_argument('--weakly_cap', action='store_true')
 
     parser.add_argument('--rl_scorer_types', type=str, nargs='+', default=['Meteor'], choices=['Meteor', 'CiderD'])
     parser.add_argument('--rl_scorer_weights', type=float, nargs='+', default=[1.])
-
-    # * Segmentation
-    parser.add_argument('--masks', action='store_true',
-                        help="Train segmentation head if the flag is provided")
 
     # Loss
     parser.add_argument('--no_aux_loss', dest='aux_loss', action='store_false',
@@ -178,19 +166,11 @@ def parse_opts():
     parser.add_argument('--focal_alpha', default=0.25, type=float)
     parser.add_argument('--focal_gamma', default=2., type=float)
 
-    parser.add_argument('--device', default='cuda',
-                        help='device to use for training / testing')
 
-    #----------------------event counter ----------------------------
+    #***************************** Event counter *****************************
     parser.add_argument('--max_eseq_length', default=10, type=int)
-    parser.add_argument('--lloss_cross_entropy', default=0, type=int, help='0 for CE loss, 1 for binary CE loss')
-    parser.add_argument('--lloss_focal_loss', default=1, type=int)
     parser.add_argument('--lloss_gau_mask', default=1, type=int)
-    parser.add_argument('--lloss_alpha', default=0.25, type=float)
-    parser.add_argument('--lloss_gamma', default=2, type=float)
     parser.add_argument('--lloss_beta', default=1, type=float)
-    parser.add_argument('--count_loss_type', default='classification', type=str, choices=['classification', 'regression'])
-    parser.add_argument('--regression_loss_type', default='l1', type=str, choices=['l1', 'l2'])
 
     # scheduled sampling
     parser.add_argument('--scheduled_sampling_start', type=int, default=-1,
@@ -203,12 +183,12 @@ def parse_opts():
     parser.add_argument('--scheduled_sampling_max_prob', type=float, default=0.25,
                         help='Maximum scheduled sampling prob.')
 
+    # reranking
     parser.add_argument('--ec_alpha', type=float, default=0.3)
     args = parser.parse_args()
 
     if args.cfg_path:
         import_cfg(args.cfg_path, vars(args))
-        # args.id = args.cfg_path.split('/cfgs/')[-1].split('.')[0].replace('/', '--')
 
     if args.random_seed:
         import random
@@ -230,14 +210,6 @@ def parse_opts():
     if args.caption_decoder_type == 'none':
         assert args.caption_loss_coef == 0
         assert args.set_cost_caption == 0
-
-    if args.caption_decoder_type == 'all_img':
-        print('Change att_hid_size from {} to {}'.format(args.att_hid_size, 1))
-        args.att_hid_size = 0
-
-    if args.wait_min > 0:
-        print('wait for {} minutes...'.format(args.wait_min))
-        time.sleep(args.wait_min * 60)
 
     print("args.id: {}".format(args.id))
     return args

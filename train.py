@@ -24,7 +24,7 @@ print(sys.path)
 from eval_utils import evaluate
 import opts
 from tensorboardX import SummaryWriter
-from misc.utils import print_alert_message, build_floder, create_logger, backup_envir, print_opt, set_seed, get_parameter_group, set_droprate
+from misc.utils import print_alert_message, build_floder, create_logger, backup_envir, print_opt, set_seed
 from data.video_dataset import PropSeqDataset, collate_fn
 from models.pdvc import build
 from collections import OrderedDict
@@ -100,10 +100,7 @@ def train(opt):
     # Load the pre-trained model
     if opt.pretrain and (not opt.start_from):
         logger.info('Load pre-trained parameters from {}'.format(opt.pretrain_path))
-        if torch.cuda.is_available():
-            model_pth = torch.load(opt.pretrain_path)
-        else:
-            model_pth = torch.load(opt.pretrain_path, map_location=torch.device('cpu'))
+        model_pth = torch.load(opt.pretrain_path, map_location=torch.device(opt.device))
         # query_weight = model_pth['model'].pop('query_embed.weight')
         if opt.pretrain == 'encoder':
             encoder_filter = model.get_filter_rule_for_encoder()
@@ -120,8 +117,7 @@ def train(opt):
         else:
             raise ValueError("wrong value of opt.pretrain")
 
-    if torch.cuda.is_available():
-        model.cuda()
+    model.to(opt.device)
 
     if opt.optimizer_type == 'adam':
         optimizer = optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.weight_decay)
@@ -152,7 +148,6 @@ def train(opt):
     # Epoch-level iteration
     while True:
         if True:
-            set_droprate(model, epoch, opt)
             # scheduled sampling rate update
             if epoch > opt.scheduled_sampling_start >= 0:
                 frac = (epoch - opt.scheduled_sampling_start) // opt.scheduled_sampling_increase_every
@@ -166,8 +161,8 @@ def train(opt):
 
         # Batch-level iteration
         for dt in tqdm(train_loader, disable=opt.disable_tqdm):
-            if torch.cuda.is_available():
-                torch.cuda.synchronize()
+            if opt.device=='cuda':
+                torch.cuda.synchronize(opt.device)
             if opt.debug:
                 # each epoch contains less mini-batches for debugging
                 if (iteration + 1) % 5 == 0:
@@ -175,12 +170,11 @@ def train(opt):
                     break
             iteration += 1
 
-            if torch.cuda.is_available():
-                optimizer.zero_grad()
-                dt = {key: _.cuda() if isinstance(_, torch.Tensor) else _ for key, _ in dt.items()}
-                dt['video_target'] = [
-                    {key: _.cuda() if isinstance(_, torch.Tensor) else _ for key, _ in vid_info.items()} for vid_info in
-                    dt['video_target']]
+            optimizer.zero_grad()
+            dt = {key: _.to(opt.device) if isinstance(_, torch.Tensor) else _ for key, _ in dt.items()}
+            dt['video_target'] = [
+                {key: _.to(opt.device) if isinstance(_, torch.Tensor) else _ for key, _ in vid_info.items()} for vid_info in
+                dt['video_target']]
 
             dt = collections.defaultdict(lambda: None, dt)
 
@@ -196,7 +190,7 @@ def train(opt):
                 loss_sum[loss_k] = loss_sum.get(loss_k, 0)+ loss_v.item()
             loss_sum['total_loss'] = loss_sum.get('total_loss', 0) + final_loss.item()
 
-            if torch.cuda.is_available():
+            if opt.device=='cuda':
                 torch.cuda.synchronize()
 
             losses_log_every = int(len(train_loader) / 10)
@@ -243,7 +237,7 @@ def train(opt):
             result_json_path = os.path.join(save_folder, 'prediction',
                                          'num{}_epoch{}.json'.format(
                                              len(val_dataset), epoch))
-            eval_score, eval_loss = evaluate(model, criterion, postprocessors, val_loader, result_json_path, logger=logger, alpha=opt.ec_alpha)
+            eval_score, eval_loss = evaluate(model, criterion, postprocessors, val_loader, result_json_path, logger=logger, alpha=opt.ec_alpha, device=opt.device, debug=opt.debug)
             if opt.caption_decoder_type == 'none':
                 current_score = np.array(eval_score['tap_AUC']).mean()
             else:

@@ -22,7 +22,7 @@ from models.pdvc import build
 from misc.utils import create_logger
 from data.video_dataset import PropSeqDataset, collate_fn
 from torch.utils.data import DataLoader
-# from aux.transfer import transfer
+
 
 def main(opt):
     folder_path = os.path.join(opt.eval_save_dir, opt.eval_folder)
@@ -37,9 +37,8 @@ def main(opt):
     for k, v in old_opt.items():
         if k[:4] != 'eval':
             vars(opt).update({k: v})
-    # opt.feature_dim = opt.raw_feature_dim
+
     opt.transformer_input_type = opt.eval_transformer_input_type
-    opt.gt_proposal_sample_num = 30
 
     if not torch.cuda.is_available():
         opt.nthreads = 0
@@ -61,24 +60,23 @@ def main(opt):
         model_path = os.path.join(folder_path, 'model-best.pth')
 
     while not os.path.exists(model_path):
-        raise AssertionError('File {} does not exist'.format(model_path)) #TODO
+        raise AssertionError('File {} does not exist'.format(model_path))
 
     logger.debug('Loading model from {}'.format(model_path))
-    loaded_pth = torch.load(model_path, map_location='cpu')
+    loaded_pth = torch.load(model_path, map_location=opt.device)
     epoch = loaded_pth['epoch']
 
     # loaded_pth = transfer(model, loaded_pth, model_path+'.transfer.pth')
     model.load_state_dict(loaded_pth['model'], strict=True)
     model.eval()
 
-    if torch.cuda.is_available():
-        model.cuda()
+    model.to(opt.device)
 
     out_json_path = os.path.join(folder_path, '{}_epoch{}_num{}_alpha{}.json'.format(
         time.strftime("%Y-%m-%d-%H-%M-%S_", time.localtime()) + str(opt.id), epoch, len(loader.dataset), opt.ec_alpha))
     logger.info('saving reults json to {}'.format(out_json_path))
     caption_scores,eval_loss = evaluate(model, criterion, postprocessors, loader, out_json_path,
-                         logger, opt.eval_random, alpha=opt.ec_alpha, dvc_eval_version=opt.eval_tool_version)
+                         logger, opt.eval_random, alpha=opt.ec_alpha, dvc_eval_version=opt.eval_tool_version, device=opt.device, debug=False)
 
     avg_eval_score = {key: np.array(value).mean() for key, value in caption_scores.items() if key !='tiou'}
     avg_eval_score2 = {key: np.array(value).mean() * 4917 / len(loader.dataset) for key, value in caption_scores.items() if key != 'tiou'}

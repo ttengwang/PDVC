@@ -116,9 +116,11 @@ class MSDeformAttn(nn.Module):
                 (sampling_locations, 0.5 * sampling_locations.new_ones(sampling_locations.shape)), -1)
             input_spatial_shapes = torch.stack([input_spatial_shapes.new_ones(input_spatial_shapes.shape), input_spatial_shapes], -1)
 
-        output = MSDeformAttnFunction.apply(
-            value, input_spatial_shapes, input_level_start_index, sampling_locations, attention_weights,
-            self.im2col_step)
-        # output = ms_deform_attn_core_pytorch(value, input_spatial_shapes, sampling_locations, attention_weights)
+        if query.device.type == 'cuda':
+            output = MSDeformAttnFunction.apply(
+                value, input_spatial_shapes, input_level_start_index, sampling_locations, attention_weights,
+                self.im2col_step)
+        else:
+            output = ms_deform_attn_core_pytorch(value, input_spatial_shapes, sampling_locations, attention_weights)
         output = self.output_proj(output)
         return output

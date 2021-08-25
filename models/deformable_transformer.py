@@ -46,7 +46,7 @@ class DeformableTransformer(nn.Module):
 
         self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model))
 
-        self.pos_trans = nn.Linear(d_model * 2, d_model * 2)
+        self.pos_trans = nn.Linear(d_model, d_model * 2)
         self.pos_trans_norm = nn.LayerNorm(d_model * 2)
         self.reference_points = nn.Linear(d_model, 1)
 
@@ -63,7 +63,7 @@ class DeformableTransformer(nn.Module):
         constant_(self.reference_points.bias.data, 0.)
         normal_(self.level_embed)
 
-    # TODO: z_change.log to fit 1D data
+
     def get_proposal_pos_embed(self, proposals):
         num_pos_feats = 256
         temperature = 10000
@@ -71,11 +71,11 @@ class DeformableTransformer(nn.Module):
 
         dim_t = torch.arange(num_pos_feats, dtype=torch.float32, device=proposals.device)
         dim_t = temperature ** (2 * (dim_t // 2) / num_pos_feats)
-        # N, L, 4
+        # N, L, 2
         proposals = proposals.sigmoid() * scale
-        # N, L, 4, 128
+        # N, L, 2, 256
         pos = proposals[:, :, :, None] / dim_t
-        # N, L, 4, 64, 2
+        # N, L, 2, 128, 2
         pos = torch.stack((pos[:, :, :, 0::2].sin(), pos[:, :, :, 1::2].cos()), dim=4).flatten(2)
         return pos
 

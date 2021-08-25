@@ -14,6 +14,7 @@ import random
 import six
 from six.moves import cPickle
 import matplotlib as mpl
+
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 
@@ -27,86 +28,9 @@ def match_name_keywords(n, name_keywords):
     return out
 
 
-def get_parameter_group(model, opt):
-    if opt.lr_proj:
-        non_caption_param = [
-            {
-                "params":
-                    [p for n, p in model.named_parameters()
-                     if not match_name_keywords(n, opt.lr_backbone_names)
-                     and not match_name_keywords(n,opt.lr_linear_proj_names)
-                     and not match_name_keywords(n, opt.lr_captioner_names)
-                     and p.requires_grad],
-                "lr": opt.lr,
-            },
-            {
-                "params": [p for n, p in model.named_parameters()
-                           if match_name_keywords(n, opt.lr_backbone_names)
-                           and p.requires_grad],
-                "lr": opt.lr_backbone,
-            },
-            {
-                "params": [p for n, p in model.named_parameters()
-                           if not match_name_keywords(n, opt.lr_captioner_names)
-                           and match_name_keywords(n,opt.lr_linear_proj_names)
-                           and p.requires_grad],
-                "lr": opt.lr * opt.lr_linear_proj_mult,
-            }
-        ]
-
-        caption_param = [
-            {
-                "params":
-                    [p for n, p in model.named_parameters()
-                     if match_name_keywords(n, opt.lr_captioner_names)
-                     and not match_name_keywords(n,opt.lr_linear_proj_names)
-                     and p.requires_grad],
-                "lr": opt.lr,
-            },
-            {
-                "params": [p for n, p in model.named_parameters() if
-                           match_name_keywords(n, opt.lr_captioner_names)
-                           and match_name_keywords(n, opt.lr_linear_proj_names)
-                           and p.requires_grad],
-                "lr": opt.lr * opt.lr_linear_proj_mult,
-            }
-        ]
-        for param in non_caption_param:
-            param['lr'] = param['lr'] * opt.non_caption_lr_mult
-    else:
-        # param_dicts = model.parameters()
-        caption_param = []
-        for name, value in model.named_parameters():
-            if match_name_keywords(name, opt.lr_captioner_names) and value.requires_grad:
-                caption_param.append(value)
-        non_caption_param = []
-        for name, value in model.named_parameters():
-            if (not match_name_keywords(name, opt.lr_captioner_names)) and value.requires_grad:
-                non_caption_param.append(value)
-
-    return non_caption_param, caption_param
-
-
 def decide_two_stage(transformer_input_type, dt, criterion):
-    if transformer_input_type == 'learnt_proposals':
+    if transformer_input_type == 'gt_proposals':
         two_stage = True
-        proposals = dt['lnt_boxes']
-        proposals_mask = dt['lnt_boxes_mask']
-        disable_iterative_refine = False
-    elif transformer_input_type == 'learnt_proposals_no_bbox_refine':
-        two_stage = True
-        proposals = dt['lnt_boxes']
-        proposals_mask = dt['lnt_boxes_mask']
-        criterion.matcher.cost_caption = 0
-        for q_k in ['loss_length', 'loss_ce']:
-            for key in criterion.weight_dict.keys():
-                if q_k in key:
-                    criterion.weight_dict[key] = 0
-        disable_iterative_refine = True
-    elif transformer_input_type == 'gt_proposals':
-        two_stage = True
-        # assert len(dt['video_target'])==1 # batchsize = 1
-        # proposals = dt['video_target'][0]['boxes'].unsqueeze(0)
         proposals = dt['gt_boxes']
         proposals_mask = dt['gt_boxes_mask']
         criterion.matcher.cost_caption = 0
@@ -115,11 +39,13 @@ def decide_two_stage(transformer_input_type, dt, criterion):
                 if q_k in key:
                     criterion.weight_dict[key] = 0
         disable_iterative_refine = True
-    else:  # transformer_input_type='queries'
+    elif transformer_input_type == 'queries':  #
         two_stage = False
         proposals = None
         proposals_mask = None
         disable_iterative_refine = False
+    else:
+        raise ValueError('Wrong value of transformer_input_type, got {}'.format(transformer_input_type))
     return two_stage, disable_iterative_refine, proposals, proposals_mask
 
 
@@ -165,23 +91,6 @@ def update_values(dict_from, dict_to):
             update_values(dict_from[key], dict_to[key])
         elif value is not None:
             dict_to[key] = dict_from[key]
-
-
-def set_droprate(model, epoch, opt):
-    frac = (epoch - opt.drop_rate_increase_start) // opt.drop_rate_increase_every
-    decay_factor = opt.drop_rate_increase_value * frac
-    r = min(opt.transformer_dropout_prob + decay_factor, opt.drop_rate_max)
-
-    for layer in model.transformer.encoder.layers:
-        layer.dropout1.p = r
-        layer.dropout2.p = r
-        layer.dropout3.p = r
-    for layer in model.transformer.decoder.layers:
-        layer.dropout4.p = r
-        layer.dropout1.p = r
-        layer.dropout2.p = r
-        layer.dropout3.p = r
-    print('drop_rate:{}'.format(r))
 
 
 def print_opt(opt, model, logger):
@@ -275,47 +184,6 @@ def clip_gradient(optimizer, grad_clip):
             if param.grad is not None:
                 param.grad.data.clamp_(-grad_clip, grad_clip)
 
-
-def plot_bbox_distribution(bboxes, save_path):
-    # bboxes: [video_num, query_num, 4]
-    N, M, C = bboxes.shape
-    bboxes = bboxes.transpose(1, 0, 2)
-
-    fig = plt.figure(figsize=(40, 20), dpi=300)
-    for m in range(M):
-        scores = []
-        centers = []
-        lengths = []
-        n_row, n_col = int(np.ceil(np.sqrt(M))), int(2 * np.ceil(M / np.sqrt(M)))
-        ax = fig.add_subplot(n_row, n_col, 2 * m + 1)
-        ax2 = fig.add_subplot(n_row, n_col, 2 * m + 2)
-        L = 100
-        dstr = np.zeros(L)
-        for n in range(N):
-            c, l = bboxes[m, n, 0], bboxes[m, n, 1]
-            centers.append(c * L)
-            lengths.append(l * L)
-            if bboxes.shape[2] > 5:
-                score = bboxes[m, n, 4:-1].max() * L
-            else:
-                score = bboxes[m, n, 4:].max() * L
-            scores.append(score)
-            s, e = c - l / 2, c + l / 2
-            s = int(max(0, min(s, 1)) * L)
-            e = int(max(0, min(e, 1)) * L)
-            dstr[s: e + 1] = dstr[s: e + 1] + 1
-        dstr = dstr / N
-        ax.plot(np.arange(L), dstr)
-        scores, centers, lengths = map(np.array, [scores, centers, lengths])
-        flierprops = dict(marker='.', markersize=1, markeredgecolor='r')
-        ax2.boxplot([scores, centers, lengths], positions=[1, 2, 3], flierprops=flierprops, vert=False,
-                    patch_artist=False, meanline=False, showmeans=True)
-        ax.set_xlim([0, 100])
-        ax2.set_xlim([0, 100])
-    # pdb.set_trace()
-    fig.savefig(save_path, bbox_inches='tight', dpi=fig.dpi, pad_inches=0.5)
-    plt.close(fig)
-    pass
 
 if __name__ == '__main__':
     # import opts

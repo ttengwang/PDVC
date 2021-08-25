@@ -1,4 +1,4 @@
-id: anet_c3d_pdvc
+id: anet_c3d_pdvc # the results and logs will saved in this folder ./save/id
 base_cfg_path: cfgs/anet_c3d_pdvcl.yml
 
 caption_decoder_type: standard

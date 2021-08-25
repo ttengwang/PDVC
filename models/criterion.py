@@ -1,3 +1,7 @@
+# ------------------------------------------------------------------------
+# Modified from DETR (https://github.com/facebookresearch/detr)
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# ------------------------------------------------------------------------
 
 import torch
 import torch.nn.functional as F
@@ -6,44 +10,6 @@ from torch import nn
 from misc.detr_utils import box_ops
 from misc.detr_utils.misc import (accuracy, get_world_size,
                          is_dist_avail_and_initialized)
-
-@torch.no_grad()
-def accuracy(output, target, topk=(1,)):
-    """Computes the precision@k for the specified values of k"""
-    if target.numel() == 0:
-        return [torch.zeros([], device=output.device)]
-    maxk = max(topk)
-    batch_size = target.size(0)
-
-    _, pred = output.topk(maxk, 1, True, True)
-    pred = pred.t()
-    correct = pred.eq(target.view(1, -1).expand_as(pred))
-
-    res = []
-    for k in topk:
-        correct_k = correct[:k].view(-1).float().sum(0)
-        res.append(correct_k.mul_(100.0 / batch_size))
-    return res
-
-def feature_div(features, mask=None):
-    if mask is None:
-        mask = features.new_ones(features.shape[:2]).unsqueeze(-1)
-
-    if len(features.shape) == 4:
-        features = features[0]
-    N, L, C = features.shape
-
-    mask = mask.squeeze(2)
-    assert mask.dim() == 2
-    f1 = features.unsqueeze(1).repeat(1, L, 1, 1)
-    f2 = features.unsqueeze(2).repeat(1, 1, L, 1)
-    div = torch.cosine_similarity(f1, f2, dim=3) - (-1)
-    # diff = (features.unsqueeze(1) - features.unsqueeze(2))
-    mask = mask.unsqueeze(1) * mask.unsqueeze(2)
-    # div = diff.norm(2, dim=3) / (features.unsqueeze(2).norm(2, dim=3) * features.unsqueeze(1).norm(2, dim=3))
-    div = (div * mask).sum(2).sum(1) / (mask.sum(2).sum(1) + 1e-5)
-    return div.mean()
-
 
 class SetCriterion(nn.Module):
     """ This class computes the loss for DETR.
@@ -68,7 +34,6 @@ class SetCriterion(nn.Module):
         self.focal_alpha = focal_alpha
         self.focal_gamma = focal_gamma
         self.opt = opt
-        self.count_loss_type = opt.count_loss_type
         counter_class_rate = [0.00000000e+00, 0.00000000e+00, 1.93425917e-01, 4.12129084e-01,
        1.88929963e-01, 7.81296833e-02, 5.09541413e-02, 3.12718553e-02,
        1.84833650e-02, 8.39244680e-03, 6.59406534e-03, 4.49595364e-03,
@@ -198,12 +163,7 @@ class SetCriterion(nn.Module):
         # Retrieve the matching between the outputs of the last layer and the targets
         last_indices = self.matcher(outputs_without_aux, targets)
         outputs['matched_indices'] = last_indices
-        # try:
-        #     indices = self.matcher(outputs_without_aux, targets)
-        #     # pdb.set_trace()
-        # except:
-        #     pdb.set_trace()
-        # Compute the average number of target boxes accross all nodes, for normalization purposes
+
         num_boxes = sum(len(t["labels"]) for t in targets)
         num_boxes = torch.as_tensor([num_boxes], dtype=torch.float, device=next(iter(outputs.values())).device)
         if is_dist_avail_and_initialized():
