@@ -241,7 +241,7 @@ def train(opt):
             if opt.caption_decoder_type == 'none':
                 current_score = np.array(eval_score['tap_AUC']).mean()
             else:
-                current_score = np.array(eval_score['rank_METEOR']).mean() + np.array(eval_score['rank_soda_c']).mean()
+                current_score = np.array(eval_score['METEOR']).mean() + np.array(eval_score['soda_c']).mean()
 
             # add to tf summary
             for key in eval_score.keys():

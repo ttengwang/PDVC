@@ -9,10 +9,10 @@ python train.py --cfg_path cfgs/anet_tsn_pdvcl.yml --disable_tqdm
 
 #python train.py --cfg_path cfgs/anet_tsn_pdvcl.yml --disable_tqdm
 
-python train.py --cfg_path cfgs/anet_c3d_pdvc_gt.yml --disable_tqdm
+python train.py --cfg_path cfgs/anet_c3d_pdvc_gt.yml --disable_tqdm --debug
 
-python train.py --cfg_path cfgs/anet_c3d_pdvcl_gt.yml --disable_tqdm
-
-python train.py --cfg_path cfgs/anet_c3d_pdvc_gt.yml --disable_tqdm
-
-python train.py --cfg_path cfgs/anet_c3d_pdvc_gt.yml --disable_tqdm
+#python train.py --cfg_path cfgs/anet_c3d_pdvcl_gt.yml --disable_tqdm
+#
+#python train.py --cfg_path cfgs/anet_c3d_pdvc_gt.yml --disable_tqdm
+#
+#python train.py --cfg_path cfgs/anet_c3d_pdvc_gt.yml --disable_tqdm

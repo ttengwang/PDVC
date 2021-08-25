@@ -111,13 +111,12 @@ def eval_metrics(dvc_filename, gt_filenames, para_gt_filenames, alpha=0.3, ranki
     #     score[key] = dvc_score[key]
 
     if rerank:
-        rank_top_n_filename = reranking(dvc_filename, alpha=alpha, temperature=2.0)
-        dvc_score = eval_dvc(json_path=rank_top_n_filename, reference=gt_filenames, version=dvc_eval_version)
-        dvc_score = {k: sum(v) / len(v) for k, v in dvc_score.items()}
-        dvc_score.update(eval_soda(rank_top_n_filename, ref_list=gt_filenames))
-        dvc_score.update(eval_para(rank_top_n_filename, referneces=para_gt_filenames))
-        for key in dvc_score.keys():
-            score[key] = dvc_score[key]
+        dvc_filename = reranking(dvc_filename, alpha=alpha, temperature=2.0)
+    dvc_score = eval_dvc(json_path=dvc_filename, reference=gt_filenames, version=dvc_eval_version)
+    dvc_score = {k: sum(v) / len(v) for k, v in dvc_score.items()}
+    dvc_score.update(eval_soda(dvc_filename, ref_list=gt_filenames))
+    dvc_score.update(eval_para(dvc_filename, referneces=para_gt_filenames))
+    score.update(dvc_score)
     return score
 
 
