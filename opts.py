@@ -28,7 +28,8 @@ def parse_opts():
     parser.add_argument('--gt_file_for_eval', type=str, nargs='+', default=['data/anet/captiondata/val_1.json', 'data/anet/captiondata/val_2.json'])
     parser.add_argument('--gt_file_for_para_eval', type=str, nargs='+', default= ['data/anet/captiondata/para/anet_entities_val_1_para.json', 'data/anet/captiondata/para/anet_entities_val_2_para.json'])
     parser.add_argument('--dict_file', type=str, default='data/anet/vocabulary_activitynet.json', help='')
-
+    parser.add_argument('--criteria_for_best_ckpt', type=str, default='dvc', choices=['dvc', 'pc'], help='for dense video captioning, use soda_c + METEOR as the criteria'
+                                                                                                         'for paragraph captioning, choose the best para_METEOR+para_CIDEr+para_BLEU4')
 
     parser.add_argument('--visual_feature_type', type=str, default='c3d', choices=['c3d', 'resnet_bn', 'resnet'])
     parser.add_argument('--feature_dim', type=int, default=500, help='dim of frame-level feature vector')
@@ -98,7 +99,7 @@ def parse_opts():
     #  ***************************** OPTIMIZER *****************************
     parser.add_argument('--training_scheme', type=str, default='all', choices=['cap_head_only', 'no_cap_head', 'all'])
     parser.add_argument('--epoch', type=int, default=30)
-    parser.add_argument('--batch_size', type=int, default=1, help='batch_size must be 1 when using hrnn')
+    parser.add_argument('--batch_size', type=int, default=1, help='batch_size')
     parser.add_argument('--batch_size_for_eval', type=int, default=1, help='batch_size must be 1 when using hrnn')
     parser.add_argument('--grad_clip', type=float, default=100., help='clip gradients at this value')
     parser.add_argument('--optimizer_type', type=str, default='adam')

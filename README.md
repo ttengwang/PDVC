@@ -37,7 +37,7 @@ cd models/ops
 sh make.sh
 ```
 
-# Usage
+# Dense Video Captioning
 ### PDVC
 - Training
 ```bash
@@ -63,18 +63,50 @@ eval_folder=anet_c3d_pdvc_gt
 python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_proposals --gpu_id ${GPU_ID}
 ```
 
+
+# Video Paragraph Captioning
+
+```bash
+# PDVC with leanrt proposal for paragraph captioning
+
+## Training
+python train.py --cfg_path cfgs/anet_c3d_pdvc.yml --criteria_for_best_ckpt pc --gpu_id ${GPU_ID} 
+
+## Evaluation
+eval_folder=anet_c3d_pdvc # the folder name you want to evaluate
+python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type queries --criteria_for_best_ckpt pc --gpu_id ${GPU_ID}
+
+
+#PDVC with gt proposals for paragraph captioning
+
+##Training
+python train.py --cfg_path cfgs/anet_c3d_pdvc_gt.yml --criteria_for_best_ckpt pc --gpu_id ${GPU_ID}
+
+##Evaluation
+eval_folder=anet_c3d_pdvc_gt
+python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_proposals --criteria_for_best_ckpt pc --gpu_id ${GPU_ID}
+```
+
+
 # Performance
 
-|  Model | Features |   Url   | Recall |Precision|    BLEU4   | METEOR2018 | METEOR2021 |  CIDEr | SODA_c | METEOR (Para-level) |
+|  Model | Features |   Url   | Recall | Precision |    BLEU4   | METEOR2018 | METEOR2021 |  CIDEr | SODA_c | METEOR (Para-level) |
 |  ----  |  ----    |   ----  |  ----   |  ----  |   ----  |  ----  |  ----  |  ----  | ---- | ---- |
+| PDVC_light   | C3D  | [Google Drive](https://drive.google.com/drive/folders/1JKOJrm5QMAkso-VJnzGnksIVqNYt8BSI?usp=sharing)  |  55.30   |  58.42  | 1.55  |  7.13  |  7.66 | 24.80  |  5.23  | 14.51 |
+| PDVC_light   | TSN  | [Google Drive](https://drive.google.com/drive/folders/1hImJ7sXABzS-ycErruLFCE_pkWEHzFSV?usp=sharing)  |  55.34   |  57.97  | 1.66  |  7.41  |  7.97 | 27.23  |  5.51  | 15.00 |
+| PDVC   | C3D  | [Google Drive](https://drive.google.com/drive/folders/1I77miVvThdMenmprgozfRsXDVoc-9TxY?usp=sharing)  |  55.20   |  57.36  | 1.82  |  7.48  |  8.09  | 28.16  |  5.47  | 14.71 |
 | PDVC   | TSN  | [Google Drive](https://drive.google.com/drive/folders/1v2Xj0Qjt3Te_SgVyySKEofRaZsSw_rjs?usp=sharing)  |  56.21   |  57.46  | 1.92  |  8.00  |  8.63 | 29.00  |  5.68  | 15.85 |
+
 
 Some notes:
 * In the paper, we follow the most previous methods to use the [evaluation toolkit in ActivityNet Challenge 2018](https://github.com/ranjaykrishna/densevid_eval/tree/deba7d7e83012b218a4df888f6c971e21cfeea33). Note that the latest [evluation tookit](https://github.com/ranjaykrishna/densevid_eval/tree/9d4045aced3d827834a5d2da3c9f0692e3f33c1c) (METEOR2021) gives a higher METEOR score.
 * Paragraph-level METEOR is evaluated on the ActivityNet Entity ae-val set, while others are on the standard  ActivityNet Captions validation set.
 
-# TODO
 
+
+
+
+# TODO
 - [ ] more pretrained models
 - [ ] support youcook2
 

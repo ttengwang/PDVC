@@ -239,9 +239,12 @@ def train(opt):
                                              len(val_dataset), epoch))
             eval_score, eval_loss = evaluate(model, criterion, postprocessors, val_loader, result_json_path, logger=logger, alpha=opt.ec_alpha, device=opt.device, debug=opt.debug)
             if opt.caption_decoder_type == 'none':
-                current_score = np.array(eval_score['tap_AUC']).mean()
+                current_score = 2./(1./eval_score['Precision'] + 1./eval_score['Recall'])
             else:
-                current_score = np.array(eval_score['METEOR']).mean() + np.array(eval_score['soda_c']).mean()
+                if opt.criteria_for_best_ckpt == 'dvc':
+                    current_score = np.array(eval_score['METEOR']).mean() + np.array(eval_score['soda_c']).mean()
+                else:
+                    current_score = np.array(eval_score['para_METEOR']).mean() + np.array(eval_score['para_CIDEr']).mean() + np.array(eval_score['para_Bleu_4']).mean()
 
             # add to tf summary
             for key in eval_score.keys():
