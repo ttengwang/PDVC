@@ -37,28 +37,48 @@ cd models/ops
 sh make.sh
 ```
 
-# Dense Video Captioning
-### PDVC
-- Training
-```bash
-python train.py --cfg_path cfgs/anet_c3d_pdvc.yml --gpu_id ${GPU_ID}
-```
-The script will print the log and evaluate the model for every epoch. The results and logs are saved in `./save/args.id`.
+# Performance
+### Dense video captioning
 
-- Evaluation
-```bash
-eval_folder=anet_c3d_pdvc # the folder name you want to evaluate
+|  Model | Features | config_path |   Url   | Recall | Precision |    BLEU4   | METEOR2018 | METEOR2021 |  CIDEr | SODA_c |
+|  ----  |  ----    |   ----  |  ----  |  ----   |  ----  |   ----  |  ----  |  ----  |  ----  | ---- |
+| PDVC_light   | C3D  | cfgs/anet_c3d_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1JKOJrm5QMAkso-VJnzGnksIVqNYt8BSI?usp=sharing)  |  55.30   |  58.42  | 1.55  |  7.13  |  7.66 | 24.80  |  5.23  |
+| PDVC_light   | TSN | cfgs/anet_tsn_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1hImJ7sXABzS-ycErruLFCE_pkWEHzFSV?usp=sharing)  |  55.34   |  57.97  | 1.66  |  7.41  |  7.97 | 27.23  |  5.51  |
+| PDVC   | C3D  | cfgs/anet_c3d_pdvc.yml |  [Google Drive](https://drive.google.com/drive/folders/1I77miVvThdMenmprgozfRsXDVoc-9TxY?usp=sharing)  |  55.20   |  57.36  | 1.82  |  7.48  |  8.09  | 28.16  |  5.47  |
+| PDVC   | TSN  | cfgs/anet_tsn_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1v2Xj0Qjt3Te_SgVyySKEofRaZsSw_rjs?usp=sharing)  |  56.21   |  57.46  | 1.92  |  8.00  |  8.63 | 29.00  |  5.68  |
+Notes:
+* In the paper, we follow the most previous methods to use the [evaluation toolkit in ActivityNet Challenge 2018](https://github.com/ranjaykrishna/densevid_eval/tree/deba7d7e83012b218a4df888f6c971e21cfeea33). Note that the latest [evluation tookit](https://github.com/ranjaykrishna/densevid_eval/tree/9d4045aced3d827834a5d2da3c9f0692e3f33c1c) (METEOR2021) gives the same CIDEr/BLEU4 but a higher METEOR score. 
+* In the paper, we use an [old version of SODA_c implementation](https://github.com/fujiso/SODA/tree/22671b3570e088217139bcb1e4de7a3499c30294), while here we use an [updated version](https://github.com/fujiso/SODA/tree/9cb3e2c5a73c4e320a38c72f320b63bbef4aa798) for convenience.
+
+### Video paragraph captioning
+|  Model | Features | config_path | BLEU4 | METEOR | CIDEr |
+|  ----  |  ----    |   ----  |  ----  |  ----  |   ----  |
+| PDVC   | C3D  | cfgs/anet_c3d_pdvc.yml |  9.67   |  14.74  | 16.43  |  
+| PDVC   | TSN  | cfgs/anet_tsn_pdvc.yml |  10.18   |  15.96  | 20.66  | 
+Notes:
+* Paragraph-level scores are evaluated on the ActivityNet Entity ae-val set.
+
+# Usage
+### Dense Video Captioning
+1. PDVC with learnt proposal
+```
+# Training
+config_path=cfgs/anet_c3d_pdvc.yml
+python train.py --cfg_path ${config_path} --gpu_id ${GPU_ID}
+# The script will evaluate the model for every epoch. The results and logs are saved in `./save`.
+
+# Evaluation
+eval_folder=anet_c3d_pdvc # specify the folder to be evaluated
 python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type queries --gpu_id ${GPU_ID}
 ```
+2. PDVC with gt proposals
 
-### PDVC with gt proposals
-
-- Training
-```bash
-python train.py --cfg_path cfgs/anet_c3d_pdvc_gt.yml --gpu_id ${GPU_ID}
 ```
-- Evaluation
-```bash
+# Training
+config_path=cfgs/anet_c3d_pdvc.yml
+python train.py --cfg_path ${config_path} --gpu_id ${GPU_ID}
+
+# Evaluation
 eval_folder=anet_c3d_pdvc_gt
 python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_proposals --gpu_id ${GPU_ID}
 ```
@@ -66,45 +86,26 @@ python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_pro
 
 # Video Paragraph Captioning
 
+1. PDVC with learnt proposal
 ```bash
-# PDVC with leanrt proposal for paragraph captioning
+# Training
+config_path=cfgs/anet_c3d_pdvc.yml
+python train.py --cfg_path ${config_path} --criteria_for_best_ckpt pc --gpu_id ${GPU_ID} 
 
-## Training
-python train.py --cfg_path cfgs/anet_c3d_pdvc.yml --criteria_for_best_ckpt pc --gpu_id ${GPU_ID} 
-
-## Evaluation
-eval_folder=anet_c3d_pdvc # the folder name you want to evaluate
-python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type queries --criteria_for_best_ckpt pc --gpu_id ${GPU_ID}
-
-
-#PDVC with gt proposals for paragraph captioning
-
-##Training
-python train.py --cfg_path cfgs/anet_c3d_pdvc_gt.yml --criteria_for_best_ckpt pc --gpu_id ${GPU_ID}
-
-##Evaluation
-eval_folder=anet_c3d_pdvc_gt
-python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_proposals --criteria_for_best_ckpt pc --gpu_id ${GPU_ID}
+# Evaluation
+eval_folder=anet_c3d_pdvc # specify the folder to be evaluated
+python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type queries --gpu_id ${GPU_ID}
 ```
+2. PDVC with gt proposal
+```
+# Training
+config_path=cfgs/anet_c3d_pdvc.yml
+python train.py --cfg_path ${config_path} --criteria_for_best_ckpt pc --gpu_id ${GPU_ID}
 
-
-# Performance
-
-|  Model | Features |   Url   | Recall | Precision |    BLEU4   | METEOR2018 | METEOR2021 |  CIDEr | SODA_c | METEOR (Para-level) |
-|  ----  |  ----    |   ----  |  ----   |  ----  |   ----  |  ----  |  ----  |  ----  | ---- | ---- |
-| PDVC_light   | C3D  | [Google Drive](https://drive.google.com/drive/folders/1JKOJrm5QMAkso-VJnzGnksIVqNYt8BSI?usp=sharing)  |  55.30   |  58.42  | 1.55  |  7.13  |  7.66 | 24.80  |  5.23  | 14.51 |
-| PDVC_light   | TSN  | [Google Drive](https://drive.google.com/drive/folders/1hImJ7sXABzS-ycErruLFCE_pkWEHzFSV?usp=sharing)  |  55.34   |  57.97  | 1.66  |  7.41  |  7.97 | 27.23  |  5.51  | 15.00 |
-| PDVC   | C3D  | [Google Drive](https://drive.google.com/drive/folders/1I77miVvThdMenmprgozfRsXDVoc-9TxY?usp=sharing)  |  55.20   |  57.36  | 1.82  |  7.48  |  8.09  | 28.16  |  5.47  | 14.71 |
-| PDVC   | TSN  | [Google Drive](https://drive.google.com/drive/folders/1v2Xj0Qjt3Te_SgVyySKEofRaZsSw_rjs?usp=sharing)  |  56.21   |  57.46  | 1.92  |  8.00  |  8.63 | 29.00  |  5.68  | 15.85 |
-
-
-Some notes:
-* In the paper, we follow the most previous methods to use the [evaluation toolkit in ActivityNet Challenge 2018](https://github.com/ranjaykrishna/densevid_eval/tree/deba7d7e83012b218a4df888f6c971e21cfeea33). Note that the latest [evluation tookit](https://github.com/ranjaykrishna/densevid_eval/tree/9d4045aced3d827834a5d2da3c9f0692e3f33c1c) (METEOR2021) gives a higher METEOR score.
-* Paragraph-level METEOR is evaluated on the ActivityNet Entity ae-val set, while others are on the standard  ActivityNet Captions validation set.
-
-
-
-
+# Evaluation
+eval_folder=anet_c3d_pdvc_gt
+python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_proposals --gpu_id ${GPU_ID}
+```
 
 # TODO
 - [ ] more pretrained models

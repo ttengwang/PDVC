@@ -23,13 +23,11 @@ class DeformableTransformer(nn.Module):
     def __init__(self, d_model=256, nhead=8,
                  num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=1024, dropout=0.1,
                  activation="relu", return_intermediate_dec=False,
-                 num_feature_levels=4, dec_n_points=4, enc_n_points=4, two_stage_num_proposals=300):
+                 num_feature_levels=4, dec_n_points=4, enc_n_points=4):
         super().__init__()
 
         self.d_model = d_model
         self.nhead = nhead
-        # self.two_stage = two_stage
-        self.two_stage_num_proposals = two_stage_num_proposals
 
         self.no_encoder = (num_encoder_layers == 0)
         self.num_feature_levels = num_feature_levels
@@ -354,5 +352,4 @@ def build_deforamble_transformer(args):
         return_intermediate_dec=True,
         num_feature_levels=args.num_feature_levels,
         dec_n_points=args.dec_n_points,
-        enc_n_points=args.enc_n_points,
-        two_stage_num_proposals=args.num_queries)
+        enc_n_points=args.enc_n_points)

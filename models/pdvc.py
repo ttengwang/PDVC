@@ -95,8 +95,6 @@ class PDVC(nn.Module):
             self.transformer.decoder.bbox_head = None
 
         self.translator = translator
-        # self.rl_scorers = init_scorer(opt.rl_scorer_types, opt.cached_tokens)
-        # self.rl_reward_weights = {k: v for k, v in zip(opt.rl_scorer_types, opt.rl_scorer_weights)}
 
         self.disable_mid_caption_heads = opt.disable_mid_caption_heads
         if self.disable_mid_caption_heads:
