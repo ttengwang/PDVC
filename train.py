@@ -19,7 +19,7 @@ pdvc_dir = dirname(abspath(__file__))
 sys.path.insert(0, pdvc_dir)
 sys.path.insert(0, os.path.join(pdvc_dir, 'densevid_eval3'))
 sys.path.insert(0, os.path.join(pdvc_dir, 'densevid_eval3/SODA'))
-print(sys.path)
+# print(sys.path)
 
 from eval_utils import evaluate
 import opts

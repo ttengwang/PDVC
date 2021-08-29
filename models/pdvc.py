@@ -191,9 +191,10 @@ class PDVC(nn.Module):
             output_count = self.predict_event_num(self.count_head[l_id], hs_lid)
             tmp = self.bbox_head[l_id](hs_lid)  # [bs, num_query, 4]
 
-            if self.opt.disable_mid_caption_heads and (l_id != hs.shape[0] - 1):
+            # if self.opt.disable_mid_caption_heads and (l_id != hs.shape[0] - 1):
+            if l_id != hs.shape[0] - 1:
                 cap_probs, seq = self.caption_prediction_eval(
-                    self.caption_head[l_id], dt, hs_lid, reference, others, 'puppet')
+                    self.caption_head[l_id], dt, hs_lid, reference, others, 'none')
             else:
                 cap_probs, seq = self.caption_prediction_eval(
                     self.caption_head[l_id], dt, hs_lid, reference, others, self.opt.caption_decoder_type)

@@ -264,7 +264,7 @@ def main(args):
                              max_proposals=args.max_proposals_per_video,
                              verbose=args.verbose, no_lang_eval=args.no_lang_eval)
     evaluator.evaluate()
-    evaluator.scores['tiou'] = args.tious
+    # evaluator.scores['tiou'] = args.tious
     return evaluator.scores
 
 

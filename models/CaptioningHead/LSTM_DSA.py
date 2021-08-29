@@ -213,7 +213,6 @@ class ShowAttendTellCore(nn.Module):
         self.n_points = opt.cap_dec_n_points
 
         self.deformable_att = MSDeformAttnCap(d_model, self.n_levels, self.n_heads, self.n_points)
-        self.soft_attention = opt.soft_attention
 
         if self.att_hid_size > 0:
             self.ctx2att = nn.Linear(self.att_feat_size, self.att_hid_size)

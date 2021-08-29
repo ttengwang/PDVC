@@ -150,12 +150,12 @@ def reranking(p_src, alpha, temperature):
         v = v[:topN]
         v = sorted(v, key=lambda x: x['timestamp'])
         d['results'][k] = v
-    save_path = p_src+'_rerank_alpha{}_topn{}_temp{}.json'.format(alpha, topN, temperature)
+    save_path = p_src+'_rerank_alpha{}_temp{}.json'.format(alpha, temperature)
     save_dvc_json(d, save_path)
     return save_path
 
 
-def evaluate(model, criterion, postprocessors, loader, dvc_json_path, logger=None, random=0, score_threshold=0,
+def evaluate(model, criterion, postprocessors, loader, dvc_json_path, logger=None, score_threshold=0,
              alpha=0.3, dvc_eval_version='2018', device='cuda', debug=False):
     out_json = {'results': {},
                 'version': "VERSION 1.0",
@@ -163,9 +163,6 @@ def evaluate(model, criterion, postprocessors, loader, dvc_json_path, logger=Non
     opt = loader.dataset.opt
 
     loss_sum = OrderedDict()
-    if random:
-        model.train()
-
     with torch.set_grad_enabled(False):
         for dt in tqdm(loader, disable=opt.disable_tqdm):
             # valid_keys = ["video_tensor", "video_length", "video_mask", "video_key"]

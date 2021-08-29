@@ -1,5 +1,5 @@
-id: yc2_resbn_pdvc
-base_cfg_path: cfgs/yc2_resbn_pdvcl.yml
+id: yc2_tsn_pdvc_gt
+base_cfg_path: cfgs/yc2_tsn_pdvcl_gt.yml
 
 caption_decoder_type: standard
 cap_nheads: 1

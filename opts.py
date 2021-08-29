@@ -13,7 +13,7 @@ def parse_opts():
     parser.add_argument('--gpu_id', type=str, nargs='+', default=[])
     parser.add_argument('--disable_tqdm', action='store_true')
     parser.add_argument('--seed', type=int, default=777)
-    parser.add_argument('--random_seed', type=int, default=0)
+    parser.add_argument('--random_seed',  action='store_true', help='choose a random seed from {1,...,1000}')
     parser.add_argument('--disable_cudnn', type=int, default=0, help='disable cudnn may solve some unknown bugs')
     parser.add_argument('--debug', action='store_true', help='using mini-dataset for fast debugging')
     parser.add_argument('--device', default='cuda', choices=['cpu', 'cuda'], help='device to use for training / testing')
@@ -151,10 +151,6 @@ def parse_opts():
     parser.add_argument('--cap_dec_n_points', default=4, type=int)
     parser.add_argument('--cap_num_feature_levels', default=4, type=int)
     parser.add_argument('--disable_mid_caption_heads', action='store_true')
-    parser.add_argument('--soft_attention', action='store_true')
-
-    parser.add_argument('--rl_scorer_types', type=str, nargs='+', default=['Meteor'], choices=['Meteor', 'CiderD'])
-    parser.add_argument('--rl_scorer_weights', type=float, nargs='+', default=[1.])
 
     # Loss
     parser.add_argument('--no_aux_loss', dest='aux_loss', action='store_false',

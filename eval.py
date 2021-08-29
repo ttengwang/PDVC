@@ -15,7 +15,7 @@ pdvc_dir = dirname(abspath(__file__))
 sys.path.insert(0, pdvc_dir)
 sys.path.insert(0, os.path.join(pdvc_dir, 'densevid_eval3'))
 sys.path.insert(0, os.path.join(pdvc_dir, 'densevid_eval3/SODA'))
-print(sys.path)
+# print(sys.path)
 
 from eval_utils import evaluate
 from models.pdvc import build
@@ -76,7 +76,7 @@ def main(opt):
         time.strftime("%Y-%m-%d-%H-%M-%S_", time.localtime()) + str(opt.id), epoch, len(loader.dataset), opt.ec_alpha))
     logger.info('saving reults json to {}'.format(out_json_path))
     caption_scores,eval_loss = evaluate(model, criterion, postprocessors, loader, out_json_path,
-                         logger, opt.eval_random, alpha=opt.ec_alpha, dvc_eval_version=opt.eval_tool_version, device=opt.device, debug=False)
+                         logger, alpha=opt.ec_alpha, dvc_eval_version=opt.eval_tool_version, device=opt.device, debug=False)
 
     avg_eval_score = {key: np.array(value).mean() for key, value in caption_scores.items() if key !='tiou'}
     avg_eval_score2 = {key: np.array(value).mean() * 4917 / len(loader.dataset) for key, value in caption_scores.items() if key != 'tiou'}
@@ -100,7 +100,6 @@ if __name__ == '__main__':
     parser.add_argument('--eval_caption_file', type=str, default='data/anet/captiondata/val_1.json')
     parser.add_argument('--eval_proposal_type', type=str, default='gt')
     parser.add_argument('--eval_transformer_input_type', type=str, default='queries', choices=['gt_proposals', 'queries'])
-    parser.add_argument('--eval_random', type=int, default=0)
     parser.add_argument('--gpu_id', type=str, nargs='+', default=['0'])
     opt = parser.parse_args()
 
