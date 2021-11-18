@@ -1,24 +1,38 @@
 # PDVC
 Official implementation for End-to-End Dense Video Captioning with Parallel Decoding (ICCV 2021). [[paper]](https://arxiv.org/abs/2108.07781) [[code]](https://github.com/ttengwang/PDVC)
 
-This repo supports:
+**This repo supports:**
 * two video captioning task: dense video captioning and video paragraph captioning
 * two datasets: ActivityNet Captions and YouCook2
 * video features containing C3D, TSN, and TSP.
 * visualization of the generated captions of your own videos
 
-# Updates
+**Table of Contents:**
+* [Updates](#updates)
+* [Introduction](#introduction)
+* [Preparation](#preparation)
+* [Running PDVC on Your Own Videos](#running-pdvc-on-your-own-videos)
+* [Usage](#usage)
+  + [Dense Video Captioning Task](#dense-video-captioning-task)
+  + [Video Paragraph Captioning Task](#video-paragraph-captioning-task)
+* [Performance](#performance)
+  + [Dense video captioning](#dense-video-captioning)
+  + [Video paragraph captioning](#video-paragraph-captioning)
+* [Citation](#citation)
+* [Acknowledgement](#acknowledgement)
+
+
+
+## Updates
 - (2021.11.19) **add code for running PDVC on raw videos and visualize the generated captions (support Chinese and other non-English languages)**
 - (2021.11.19) add pretrained models with TSP features. It achieves 9.06 METEOR(2021) and 5.84 SODA_c, a very competitive results on ActivityNet Captions without self-critical training.
 - (2021.08.29) add TSN pretrained models and support YouCook2
 
-# Introduction
-PDVC is a simple yet effective framework for end-to-end dense video captioning with parallel decoding (PDVC), by formulating the dense caption generation as a set prediction task. Without bells and whistles, extensive experiments on ActivityNet Captions and YouCook2 show that PDVC is capable of producing high-quality captioning results, surpassing the state-of-the-art methods when its localization accuracy is on par with them. 
-
-
+## Introduction
+PDVC is a simple yet effective framework for end-to-end dense video captioning with parallel decoding (PDVC), by formulating the dense caption generation as a set prediction task. Without bells and whistles, extensive experiments on ActivityNet Captions and YouCook2 show that PDVC is capable of producing high-quality captioning results, surpassing the state-of-the-art methods when its localization accuracy is on par with them.
 ![pdvc.jpg](pdvc.jpg)
 
-# Preparation
+## Preparation
 Environment: Linux,  GCC>=5.4, CUDA >= 9.2, Python>=3.7, PyTorch>=1.5.1
 
 1. Clone the repo
@@ -50,7 +64,7 @@ cd pdvc/ops
 sh make.sh
 ```
 
-# Running PDVC on Your Own Videos
+## Running PDVC on Your Own Videos
 Download a pretrained model ([GoogleDrive](https://drive.google.com/drive/folders/1sX5wTk1hBgR_a5YUzpxFCrzwkZQXiIab?usp=sharing)) with [TSP](https://github.com/HumamAlwassel/TSP) features  and put it into `./save`. Then run:
 ```
 video_folder=visualization/videos # path to video folder (only support mp4 files)
@@ -63,8 +77,8 @@ check the `$output_folder`, you will see a new video with embedded captions. Not
 
 ![demo.gif](visualization/xukun.gif)
 
-# Usage
-### Dense Video Captioning Task
+## Usage
+### Dense Video Captioning
 1. PDVC with learnt proposals
 ```
 # Training
@@ -89,7 +103,7 @@ python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_pro
 ```
 
 
-### Video Paragraph Captioning Task
+### Video Paragraph Captioning
 
 1. PDVC with learnt proposals
 ```bash
@@ -112,7 +126,7 @@ eval_folder=anet_c3d_pdvc_gt
 python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_proposals --gpu_id ${GPU_ID}
 ```
 
-# Performance
+## Performance
 ### Dense video captioning
 
 |  Model | Features | config_path |   Url   | Recall | Precision |    BLEU4   | METEOR2018 | METEOR2021 |  CIDEr | SODA_c |
@@ -139,9 +153,7 @@ Notes:
 * Paragraph-level scores are evaluated on the ActivityNet Entity ae-val set.
 
 
-
-
-# Citation
+## Citation
 If you find this repo helpful, please consider citing:
 ```
 @inproceedings{wang2021end,
@@ -164,7 +176,7 @@ If you find this repo helpful, please consider citing:
   doi={10.1109/TCSVT.2020.3014606}}
 ```
 
-# Acknowledgement
+## Acknowledgement
 
 The implementation of Deformable Transformer is mainly based on [Deformable DETR](https://github.com/fundamentalvision/Deformable-DETR). 
 The implementation of the captioning head is based on [ImageCaptioning.pytorch](https://github.com/ruotianluo/ImageCaptioning.pytorch).
