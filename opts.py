@@ -100,7 +100,7 @@ def parse_opts():
     parser.add_argument('--training_scheme', type=str, default='all', choices=['cap_head_only', 'no_cap_head', 'all'])
     parser.add_argument('--epoch', type=int, default=30)
     parser.add_argument('--batch_size', type=int, default=1, help='batch_size')
-    parser.add_argument('--batch_size_for_eval', type=int, default=1, help='batch_size must be 1 when using hrnn')
+    parser.add_argument('--batch_size_for_eval', type=int, default=1, help='')
     parser.add_argument('--grad_clip', type=float, default=100., help='clip gradients at this value')
     parser.add_argument('--optimizer_type', type=str, default='adam')
     parser.add_argument('--weight_decay', type=float, default=0, help='weight_decay')
@@ -128,7 +128,7 @@ def parse_opts():
     parser.add_argument('--transformer_input_type', default='queries', choices=['gt_proposals', 'learnt_proposals', 'queries'])
 
     # * Backbone
-    parser.add_argument('--backbone', default='resnet50', type=str,
+    parser.add_argument('--backbone', default=None, type=str,
                         help="Name of the convolutional backbone to use")
     parser.add_argument('--dilation', action='store_true',
                         help="If true, we replace stride with dilation in the last convolutional block (DC5)")

@@ -26,7 +26,7 @@ import opts
 from tensorboardX import SummaryWriter
 from misc.utils import print_alert_message, build_floder, create_logger, backup_envir, print_opt, set_seed
 from data.video_dataset import PropSeqDataset, collate_fn
-from models.pdvc import build
+from pdvc.pdvc import build
 from collections import OrderedDict
 
 def train(opt):

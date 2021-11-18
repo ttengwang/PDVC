@@ -81,6 +81,7 @@ def set_seed(seed):
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 def update_values(dict_from, dict_to):
@@ -126,8 +127,7 @@ def build_floder(opt):
 
 
 def backup_envir(save_folder):
-    backup_folders = ['cfgs', 'misc', 'models']
-    # backup_folders = ['models']
+    backup_folders = ['cfgs', 'misc', 'pdvc']
     backup_files = glob.glob('./*.py')
     for folder in backup_folders:
         shutil.copytree(folder, os.path.join(save_folder, 'backup', folder))

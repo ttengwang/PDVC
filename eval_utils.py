@@ -17,10 +17,10 @@ sys.path.insert(0, pdvc_dir)
 sys.path.insert(0, os.path.join(pdvc_dir, 'densevid_eval3'))
 sys.path.insert(0, os.path.join(pdvc_dir, 'densevid_eval3/SODA'))
 
+
 from densevid_eval3.eval_soda import eval_soda
 from densevid_eval3.eval_para import eval_para
 from densevid_eval3.eval_dvc import eval_dvc
-
 
 def calculate_avg_proposal_num(json_path):
     data = json.load(open(json_path))
@@ -156,7 +156,7 @@ def reranking(p_src, alpha, temperature):
 
 
 def evaluate(model, criterion, postprocessors, loader, dvc_json_path, logger=None, score_threshold=0,
-             alpha=0.3, dvc_eval_version='2018', device='cuda', debug=False):
+             alpha=0.3, dvc_eval_version='2018', device='cuda', debug=False, skip_lang_eval=False):
     out_json = {'results': {},
                 'version': "VERSION 1.0",
                 'external_data': {'used:': True, 'details': None}}
@@ -208,6 +208,9 @@ def evaluate(model, criterion, postprocessors, loader, dvc_json_path, logger=Non
                 break
 
     save_dvc_json(out_json, dvc_json_path)
+
+    if skip_lang_eval:
+        return None, None
 
     for k in loss_sum.keys():
         loss_sum[k] = np.round(loss_sum[k] / (len(loader) + 1e-5), 3).item()

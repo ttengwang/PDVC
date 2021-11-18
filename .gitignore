@@ -6,6 +6,7 @@ data/anet/features/c3d
 data/anet/features/resnet_bn
 data/yc2/features/resnet_bn
 data/densevid_eval3
+*.tmp
 
 *.Ink
 .idea/
