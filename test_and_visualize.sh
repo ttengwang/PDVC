@@ -47,7 +47,7 @@ STRIDE=16
 SHARD_ID=0
 NUM_SHARDS=1
 DEVICE=cuda
-WORKER_NUM=0
+WORKER_NUM=8
 
 echo "START GENERATE METADATA"
 python video_backbone/TSP/data/generate_metadata_csv.py --video-folder $DATA_PATH --output-csv $METADATA_CSV_FILENAME
