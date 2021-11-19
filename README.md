@@ -1,5 +1,8 @@
 # PDVC
-Official implementation for End-to-End Dense Video Captioning with Parallel Decoding (ICCV 2021) [[paper]](https://arxiv.org/abs/2108.07781) 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/end-to-end-dense-video-captioning-with/dense-video-captioning-on-youcook2)](https://paperswithcode.com/sota/dense-video-captioning-on-youcook2?p=end-to-end-dense-video-captioning-with)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/end-to-end-dense-video-captioning-with/dense-video-captioning-on-activitynet)](https://paperswithcode.com/sota/dense-video-captioning-on-activitynet?p=end-to-end-dense-video-captioning-with)
+
+Official implementation for End-to-End Dense Video Captioning with Parallel Decoding (ICCV 2021) [[paper]](https://arxiv.org/abs/2108.07781)
 
 **This repo supports:**
 * two video captioning tasks: dense video captioning and video paragraph captioning
@@ -138,8 +141,8 @@ python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_pro
 | PDVC   | C3D  | cfgs/anet_c3d_pdvc.yml |  [Google Drive](https://drive.google.com/drive/folders/1I77miVvThdMenmprgozfRsXDVoc-9TxY?usp=sharing)  |  55.20   |  57.36  | 1.82  |  7.48  |  8.09  | 28.16  |  5.47  |
 | PDVC_light   | TSN | cfgs/anet_tsn_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1hImJ7sXABzS-ycErruLFCE_pkWEHzFSV?usp=sharing)  |  55.34   |  57.97  | 1.66  |  7.41  |  7.97 | 27.23  |  5.51  |
 | PDVC   | TSN  | cfgs/anet_tsn_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1v2Xj0Qjt3Te_SgVyySKEofRaZsSw_rjs?usp=sharing)  |  56.21   |  57.46  | 1.92  |  8.00  |  8.63 | 29.00  |  5.68  |
-| PDVC_light   | TSP | cfgs/anet_tsn_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1Ei8lnBs9Nn2SsFVd7WGe2iJERo46izv8?usp=sharing)  |  55.24   |  57.78  | 1.77  |  7.94  |  8.55 | 28.25  |  5.95  |
-| PDVC   | TSP  | cfgs/anet_tsn_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1sX5wTk1hBgR_a5YUzpxFCrzwkZQXiIab?usp=sharing)  |  55.79   |  57.39  | 2.17  |  8.37  |  9.03 | 31.14  |  6.05  |
+| PDVC_light   | TSP | cfgs/anet_tsp_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1Ei8lnBs9Nn2SsFVd7WGe2iJERo46izv8?usp=sharing)  |  55.24   |  57.78  | 1.77  |  7.94  |  8.55 | 28.25  |  5.95  |
+| PDVC   | TSP  | cfgs/anet_tsp_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1sX5wTk1hBgR_a5YUzpxFCrzwkZQXiIab?usp=sharing)  |  55.79   |  57.39  | 2.17  |  8.37  |  9.03 | 31.14  |  6.05  |
 
 
 Notes:
@@ -151,7 +154,7 @@ Notes:
 |  ----  |  ----    |   ----  |  ----  |  ----  |   ----  |
 | PDVC   | C3D  | cfgs/anet_c3d_pdvc.yml | 9.67   |  14.74  | 16.43  |  
 | PDVC   | TSN  | cfgs/anet_tsn_pdvc.yml | 10.18   |  15.96  | 20.66  | 
-| PDVC   | TSP  | cfgs/anet_tsn_pdvc.yml | 10.46 | 16.42 | 20.91 |
+| PDVC   | TSP  | cfgs/anet_tsp_pdvc.yml | 10.46 | 16.42 | 20.91 |
 
 Notes:
 * Paragraph-level scores are evaluated on the ActivityNet Entity ae-val set.
