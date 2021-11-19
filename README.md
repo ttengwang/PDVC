@@ -71,9 +71,12 @@ video_folder=visualization/videos
 output_folder=visualization/output
 pdvc_model_path=save/anet_tsp_pdvc/model-best.pth
 output_language=en
-bash test_and_visualize.sh $video_folder $output_folder $pdvc_model_path $pdvc_model_path $output_language # to generate new captioning
+bash test_and_visualize.sh $video_folder $output_folder $pdvc_model_path $output_language
 ```
-check the `$output_folder`, you will see a new video with embedded captions. Not that we generate non-English captions by translating the English captions by GoogleTranslate. To produce chinese captions, set `output_language=zh-cn`. For other language support, find the abbreviation of your language at this [url](https://github.com/lushan88a/google_trans_new/blob/main/constant.py).
+check the `$output_folder`, you will see a new video with embedded captions. 
+Note that we generate non-English captions by translating the English captions by GoogleTranslate. 
+To produce chinese captions, set `output_language=zh-cn`. 
+For other language support, find the abbreviation of your language at this [url](https://github.com/lushan88a/google_trans_new/blob/main/constant.py), and you also may need to download a font supporting your language and put it into `./visualization`.
 
 ![demo.gif](visualization/xukun_en.gif)![demo.gif](visualization/xukun_cn.gif)
 
