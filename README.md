@@ -2,7 +2,7 @@
 Official implementation for End-to-End Dense Video Captioning with Parallel Decoding (ICCV 2021). [[paper]](https://arxiv.org/abs/2108.07781) [[code]](https://github.com/ttengwang/PDVC)
 
 **This repo supports:**
-* two video captioning task: dense video captioning and video paragraph captioning
+* two video captioning tasks: dense video captioning and video paragraph captioning
 * two datasets: ActivityNet Captions and YouCook2
 * video features containing C3D, TSN, and TSP.
 * visualization of the generated captions of your own videos
@@ -13,8 +13,8 @@ Official implementation for End-to-End Dense Video Captioning with Parallel Deco
 * [Preparation](#preparation)
 * [Running PDVC on Your Own Videos](#running-pdvc-on-your-own-videos)
 * [Usage](#usage)
-  + [Dense Video Captioning Task](#dense-video-captioning-task)
-  + [Video Paragraph Captioning Task](#video-paragraph-captioning-task)
+  + [Dense Video Captioning](#dense-video-captioning)
+  + [Video Paragraph Captioning](#video-paragraph-captioning)
 * [Performance](#performance)
   + [Dense video captioning](#dense-video-captioning)
   + [Video paragraph captioning](#video-paragraph-captioning)
@@ -25,7 +25,7 @@ Official implementation for End-to-End Dense Video Captioning with Parallel Deco
 
 ## Updates
 - (2021.11.19) **add code for running PDVC on raw videos and visualize the generated captions (support Chinese and other non-English languages)**
-- (2021.11.19) add pretrained models with TSP features. It achieves 9.06 METEOR(2021) and 5.84 SODA_c, a very competitive results on ActivityNet Captions without self-critical training.
+- (2021.11.19) add pretrained models with TSP features. It achieves 9.03 METEOR(2021) and 6.05 SODA_c, a very competitive results on ActivityNet Captions without self-critical sequence training.
 - (2021.08.29) add TSN pretrained models and support YouCook2
 
 ## Introduction
@@ -48,7 +48,6 @@ conda install pytorch==1.7.1 torchvision==0.8.2 cudatoolkit=10.1 -c pytorch
 pip install -r requirement.txt
 ```
 
-
 3. Prepare the video features of ActivityNet Captions and YouCook2.
 ```bash
 cd data/anet/features
@@ -66,14 +65,14 @@ sh make.sh
 
 ## Running PDVC on Your Own Videos
 Download a pretrained model ([GoogleDrive](https://drive.google.com/drive/folders/1sX5wTk1hBgR_a5YUzpxFCrzwkZQXiIab?usp=sharing)) with [TSP](https://github.com/HumamAlwassel/TSP) features  and put it into `./save`. Then run:
-```
-video_folder=visualization/videos # path to video folder (only support mp4 files)
-output_folder=visualization/videos # path to save results
-pdvc_model_path=save/anet_tsp_pdvc/model-best.pth # path of pretrained model
-output_language=en # 'zh-cn' for chinese (simplied), for other language, find the abbreviation of your language at https://github.com/lushan88a/google_trans_new/blob/main/constant.py
+```bash
+video_folder=visualization/videos
+output_folder=visualization/videos
+pdvc_model_path=save/anet_tsp_pdvc/model-best.pth
+output_language=en
 bash test_and_visualize.sh $video_folder $output_folder $pdvc_model_path $pdvc_model_path $output_language # to generate new captioning
 ```
-check the `$output_folder`, you will see a new video with embedded captions. Not that we geneate non-English Captions by translating the English captions by GoogleTranslater.
+check the `$output_folder`, you will see a new video with embedded captions. Not that we generate non-English captions by translating the English captions by GoogleTranslate. To produce chinese captions, set `output_language=zh-cn`. For other language support, find the abbreviation of your language at this [url](https://github.com/lushan88a/google_trans_new/blob/main/constant.py).
 
 ![demo.gif](visualization/xukun.gif)
 
@@ -136,7 +135,7 @@ python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_pro
 | PDVC_light   | TSN | cfgs/anet_tsn_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1hImJ7sXABzS-ycErruLFCE_pkWEHzFSV?usp=sharing)  |  55.34   |  57.97  | 1.66  |  7.41  |  7.97 | 27.23  |  5.51  |
 | PDVC   | TSN  | cfgs/anet_tsn_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1v2Xj0Qjt3Te_SgVyySKEofRaZsSw_rjs?usp=sharing)  |  56.21   |  57.46  | 1.92  |  8.00  |  8.63 | 29.00  |  5.68  |
 | PDVC_light   | TSP | cfgs/anet_tsn_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1Ei8lnBs9Nn2SsFVd7WGe2iJERo46izv8?usp=sharing)  |  55.24   |  57.78  | 1.77  |  7.94  |  8.55 | 28.25  |  5.95  |
-| PDVC   | TSP  | cfgs/anet_tsn_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1sX5wTk1hBgR_a5YUzpxFCrzwkZQXiIab?usp=sharing)  |  55.22   |  57.17  | 2.21  |  8.42  |  9.06 | 30.35  |  5.84  |
+| PDVC   | TSP  | cfgs/anet_tsn_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1sX5wTk1hBgR_a5YUzpxFCrzwkZQXiIab?usp=sharing)  |  55.79   |  57.39  | 2.17  |  8.37  |  9.03 | 31.14  |  6.05  |
 
 
 Notes:
@@ -148,7 +147,8 @@ Notes:
 |  ----  |  ----    |   ----  |  ----  |  ----  |   ----  |
 | PDVC   | C3D  | cfgs/anet_c3d_pdvc.yml | 9.67   |  14.74  | 16.43  |  
 | PDVC   | TSN  | cfgs/anet_tsn_pdvc.yml | 10.18   |  15.96  | 20.66  | 
-| PDVC   | TSP  | cfgs/anet_tsn_pdvc.yml | 10.09 | 16.43 | 19.41 | 
+| PDVC   | TSP  | cfgs/anet_tsn_pdvc.yml | 10.46 | 16.42 | 20.91 |
+
 Notes:
 * Paragraph-level scores are evaluated on the ActivityNet Entity ae-val set.
 
