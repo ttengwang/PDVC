@@ -17,14 +17,15 @@ if [ -z "$DATA_PATH" ]; then
 fi
 
 if [ -z "$OUTPUT_FOLDER" ]; then
-    echo "METADATA_CSV_FILENAME variable is not set."
-    echo "We provide metadata CSV files for ActivityNet and THUMOS14 in the data folder."
+    echo "OUTPUT_FOLDER variable is not set."
+      echo "Please set OUTPUT_FOLDER to the folder you want to save generate captions."
+    exit 1
     exit 1
 fi
 
 if [ -z "$PDVC_MODEL_PATH" ]; then
-    echo "METADATA_CSV_FILENAME variable is not set."
-    echo "We provide metadata CSV files for ActivityNet and THUMOS14 in the data folder."
+    echo "PDVC_MODEL_PATH variable is not set."
+    echo "Please set the pretrained PDVC model path (only support PDVC with TSP features)."
     exit 1
 fi
 

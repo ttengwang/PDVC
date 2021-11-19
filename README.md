@@ -45,6 +45,7 @@ git clone --recursive https://github.com/ttengwang/PDVC.git
 conda create -n PDVC python=3.7
 source activate PDVC
 conda install pytorch==1.7.1 torchvision==0.8.2 cudatoolkit=10.1 -c pytorch
+conda install ffmpeg
 pip install -r requirement.txt
 ```
 
@@ -67,7 +68,7 @@ sh make.sh
 Download a pretrained model ([GoogleDrive](https://drive.google.com/drive/folders/1sX5wTk1hBgR_a5YUzpxFCrzwkZQXiIab?usp=sharing)) with [TSP](https://github.com/HumamAlwassel/TSP) features  and put it into `./save`. Then run:
 ```bash
 video_folder=visualization/videos
-output_folder=visualization/videos
+output_folder=visualization/output
 pdvc_model_path=save/anet_tsp_pdvc/model-best.pth
 output_language=en
 bash test_and_visualize.sh $video_folder $output_folder $pdvc_model_path $pdvc_model_path $output_language # to generate new captioning
