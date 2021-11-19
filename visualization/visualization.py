@@ -46,7 +46,7 @@ def paint_chinese_opencv(im, chinese, pos, color):
     return img
 
 
-def processImg(img, cur_time, title, captions, max_n_caption=3, output_chinese=False):
+def processImg(img, cur_time, title, captions, max_n_caption=3, output_language='en'):
     max_n_caption = min(max_n_caption, len(captions))
     captions = captions[:max_n_caption]
     h, w, c = img.shape
@@ -69,12 +69,12 @@ def processImg(img, cur_time, title, captions, max_n_caption=3, output_chinese=F
 
         #             caption = 'Event{} {:2.1f}s-{:2.1f}s: {}'.format(event_id, timestamp[0], timestamp[1], caption)
         caption = '{:2.1f}s-{:2.1f}s: {}'.format(timestamp[0], timestamp[1], caption)
-        if output_chinese:
+        if output_language == 'zh-cn':
             ptText = (10, h - 50 * max_n_caption + i * 50)
             img = paint_chinese_opencv(img, caption, ptText, color=(255, 255, 255))
         else:
             ptText = (10, h - 50 * max_n_caption + 40 + i * 50)
-            cv2.putText(img, caption, ptText, cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 1)
+            cv2.putText(img, caption, ptText, cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 2)
     return img, cur_time, img_fps
 
 
@@ -115,7 +115,7 @@ def vid_show(vid_path, captions, save_mp4, save_mp4_path, output_language='en'):
         frame_time = frame_id / fps
         frame_captions = get_frame_caption(frame_time, captions)
         title = '{:.1f}s/{:.1f}s'.format(frame_time, duration)
-        frame, cur_time, img_fps = processImg(frame, cur_time, title, frame_captions, output_chinese=output_chinese)
+        frame, cur_time, img_fps = processImg(frame, cur_time, title, frame_captions, output_language=output_language)
         if not save_mp4:
             plt.axis('off')
             plt.imshow(frame[:, :, ::-1])

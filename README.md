@@ -1,5 +1,5 @@
 # PDVC
-Official implementation for End-to-End Dense Video Captioning with Parallel Decoding (ICCV 2021). [[paper]](https://arxiv.org/abs/2108.07781) [[code]](https://github.com/ttengwang/PDVC)
+Official implementation for End-to-End Dense Video Captioning with Parallel Decoding (ICCV 2021) [[paper]](https://arxiv.org/abs/2108.07781) 
 
 **This repo supports:**
 * two video captioning tasks: dense video captioning and video paragraph captioning
@@ -74,7 +74,7 @@ bash test_and_visualize.sh $video_folder $output_folder $pdvc_model_path $pdvc_m
 ```
 check the `$output_folder`, you will see a new video with embedded captions. Not that we generate non-English captions by translating the English captions by GoogleTranslate. To produce chinese captions, set `output_language=zh-cn`. For other language support, find the abbreviation of your language at this [url](https://github.com/lushan88a/google_trans_new/blob/main/constant.py).
 
-![demo.gif](visualization/xukun.gif)
+![demo.gif](visualization/xukun_en.gif)![demo.gif](visualization/xukun_cn.gif)
 
 ## Usage
 ### Dense Video Captioning
