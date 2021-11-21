@@ -36,6 +36,7 @@ def convert_tapjson_to_dvcjson(tap_json, dvc_json):
         for p_info in data['results'][video_name]:
             p_info['timestamp'] = p_info.pop('segment')
             p_info['proposal_score'] = p_info.pop('score')
+            p_info['sentence_score'] = p_info.pop('sentence_score', 0)
         data['results']["v_" + video_name] = data['results'].pop(video_name)
     json.dump(data, open(dvc_json, 'w'))
 
@@ -52,10 +53,10 @@ def convert_dvcjson_to_tapjson(dvc_json, tap_json):
         video_info = []
         event_num = len(data[video_name])
         timestamps = [data[video_name][i]['timestamp'] for i in range(event_num)]
-        # sentences = [data[video_name][i]['sentence'] for i in range(event_num)]
+        sentences = [data[video_name][i]['sentence'] for i in range(event_num)]
         for i, timestamp in enumerate(timestamps):
             score = data[video_name][i].get('proposal_score', 1.0)
-            video_info.append({'segment': timestamp, 'score': score})
+            video_info.append({'segment': timestamp, 'score': score, 'sentence': sentences[i], 'sentence_score': data[video_name][i].get('sentence_score', 0)})
         out['results'][video_name[2:]] = video_info
     json.dump(out, open(tap_json, 'w'))
 
@@ -71,9 +72,9 @@ def convert_gtjson_to_tapjson(gt_json, tap_json):
     for video_name in all_names:
         video_info = []
         timestamps = data[video_name]['timestamps']
-        # sentences = data[video_name]['sentences']
+        sentences = data[video_name]['sentences']
         for i, timestamp in enumerate(timestamps):
-            video_info.append({'segment': timestamp, 'score': 1.})
+            video_info.append({'segment': timestamp, 'score': 1., 'sentence': sentences[i]})
         out['results'][video_name[2:]] = video_info
     with open(tap_json, 'w') as f:
         json.dump(out, f)
