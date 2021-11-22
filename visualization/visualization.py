@@ -65,7 +65,7 @@ def processImg(img, cur_time, title, dense_captions, prop_idx, n_caption=3, outp
     if output_language == 'zh-cn':
         font = ImageFont.truetype('visualization/NotoSansCJK-Bold.otf', font_size)
     elif output_language == 'en':
-        font = ImageFont.truetype("Arial.ttf", font_size)
+        font = ImageFont.truetype("visualization/Arial.ttf", font_size)
     else:
         font = ImageFont.truetype("/path/to/your.font.ttf", font_size)
     img = paint_text(img, title, font, (10, 0), color=(255, 255, 255))
