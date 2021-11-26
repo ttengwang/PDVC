@@ -15,7 +15,8 @@ Official implementation for End-to-End Dense Video Captioning with Parallel Deco
 * [Introduction](#introduction)
 * [Preparation](#preparation)
 * [Running PDVC on Your Own Videos](#running-pdvc-on-your-own-videos)
-* [Usage](#usage)
+* [Training and Validation](#training-and-validation)
+  + [Download Video Features](#download-video-features)
   + [Dense Video Captioning](#dense-video-captioning)
   + [Video Paragraph Captioning](#video-paragraph-captioning)
 * [Performance](#performance)
@@ -52,16 +53,7 @@ conda install ffmpeg
 pip install -r requirement.txt
 ```
 
-3. Prepare the video features of ActivityNet Captions and YouCook2.
-```bash
-cd data/anet/features
-bash download_anet_c3d.sh
-# bash download_anet_tsn.sh
-# bash download_i3d_vggish_features.sh
-# bash download_tsp_features.sh
-```
-
-4. Compile the deformable attention layer (requires GCC >= 5.4). 
+3. Compile the deformable attention layer (requires GCC >= 5.4). 
 ```bash
 cd pdvc/ops
 sh make.sh
@@ -83,7 +75,18 @@ For other language support, find the abbreviation of your language at this [url]
 
 ![demo.gif](visualization/xukun_en.gif)![demo.gif](visualization/xukun_cn.gif)
 
-## Usage
+## Training and Validation
+
+### Download Video Features
+
+```bash
+cd data/anet/features
+bash download_anet_c3d.sh
+# bash download_anet_tsn.sh
+# bash download_i3d_vggish_features.sh
+# bash download_tsp_features.sh
+```
+
 ### Dense Video Captioning
 1. PDVC with learnt proposals
 ```
