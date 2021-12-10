@@ -129,7 +129,7 @@ python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type querie
 2. PDVC with ground-truth proposals
 ```
 # Training
-config_path=cfgs/anet_c3d_pdvc.yml
+config_path=cfgs/anet_c3d_pdvc_gt.yml
 python train.py --cfg_path ${config_path} --criteria_for_best_ckpt pc --gpu_id ${GPU_ID}
 
 # Evaluation
