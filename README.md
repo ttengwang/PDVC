@@ -105,7 +105,7 @@ python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type querie
 
 ```
 # Training
-config_path=cfgs/anet_c3d_pdvc.yml
+config_path=cfgs/anet_c3d_pdvc_gt.yml
 python train.py --cfg_path ${config_path} --gpu_id ${GPU_ID}
 
 # Evaluation
