@@ -3,3 +3,4 @@
 wget https://github.com/HumamAlwassel/TSP/releases/download/activitynet_features/r2plus1d_34-tsp_on_activitynet-train_features.h5
 wget https://github.com/HumamAlwassel/TSP/releases/download/activitynet_features/r2plus1d_34-tsp_on_activitynet-valid_features.h5
 wget https://github.com/HumamAlwassel/TSP/releases/download/activitynet_features/r2plus1d_34-tsp_on_activitynet-test_features.h5
+python convert_tsp_h5_to_npy.py
