@@ -72,7 +72,7 @@ bash test_and_visualize.sh $video_folder $output_folder $pdvc_model_path $output
 ```
 check the `$output_folder`, you will see a new video with embedded captions. 
 Note that we generate non-English captions by translating the English captions by GoogleTranslate. 
-To produce chinese captions, set `output_language=zh-cn`. 
+To produce Chinese captions, set `output_language=zh-cn`. 
 For other language support, find the abbreviation of your language at this [url](https://github.com/lushan88a/google_trans_new/blob/main/constant.py), and you also may need to download a font supporting your language and put it into `./visualization`.
 
 ![demo.gif](visualization/xukun_en.gif)![demo.gif](visualization/xukun_cn.gif)
@@ -88,6 +88,7 @@ bash download_anet_c3d.sh
 # bash download_i3d_vggish_features.sh
 # bash download_tsp_features.sh
 ```
+The preprocessed C3D and TSN features have been uploaded to [google drive](https://drive.google.com/drive/folders/15Owgdwc1gJWYf_B9PcDiemq_478r9VJZ?usp=sharing)
 
 ### Dense Video Captioning
 1. PDVC with learnt proposals
