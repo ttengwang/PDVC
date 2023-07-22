@@ -31,7 +31,7 @@ Official implementation for End-to-End Dense Video Captioning with Parallel Deco
 
 ## Updates
 - (2021.11.19) **add code for running PDVC on raw videos and visualize the generated captions (support Chinese and other non-English languages)**
-- (2021.11.19) add pretrained models with [TSP features](https://github.com/HumamAlwassel/TSP). It achieves 9.03 METEOR(2021) and 6.05 SODA_c, a very competitive results on ActivityNet Captions without self-critical sequence training.
+- (2021.11.19) add pretrained models with [TSP features](https://github.com/HumamAlwassel/TSP). It achieves 9.03 METEOR(2021) and 6.05 SODA_c, a very competitive result on ActivityNet Captions without self-critical sequence training.
 - (2021.08.29) add TSN pretrained models and support YouCook2
 
 ## Introduction
@@ -46,7 +46,7 @@ Environment: Linux,  GCC>=5.4, CUDA >= 9.2, Python>=3.7, PyTorch>=1.5.1
 git clone --recursive https://github.com/ttengwang/PDVC.git
 ```
 
-2. Create vitual environment by conda
+2. Create virtual environment by conda
 ```bash
 conda create -n PDVC python=3.7
 source activate PDVC
@@ -62,7 +62,7 @@ sh make.sh
 ```
 
 ## Running PDVC on Your Own Videos
-Download a pretrained model ([GoogleDrive](https://drive.google.com/drive/folders/1sX5wTk1hBgR_a5YUzpxFCrzwkZQXiIab?usp=sharing)) with [TSP](https://github.com/HumamAlwassel/TSP) features  and put it into `./save`. Then run:
+Download a pretrained model ([GoogleDrive](https://drive.google.com/drive/folders/1Y34puRNE0lpbz3i38k1nh8d9E1i3S0i4?usp=drive_link)) with [TSP](https://github.com/HumamAlwassel/TSP) features  and put it into `./save`. Then run:
 ```bash
 video_folder=visualization/videos
 output_folder=visualization/output
@@ -143,12 +143,12 @@ python eval.py --eval_folder ${eval_folder} --eval_transformer_input_type gt_pro
 
 |  Model | Features | config_path |   Url   | Recall | Precision |    BLEU4   | METEOR2018 | METEOR2021 |  CIDEr | SODA_c |
 |  ----  |  ----    |   ----  |  ----  |  ----   |  ----  |   ----  |  ----  |  ----  |  ----  | ---- |
-| PDVC_light   | C3D  | cfgs/anet_c3d_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1JKOJrm5QMAkso-VJnzGnksIVqNYt8BSI?usp=sharing)  |  55.30   |  58.42  | 1.55  |  7.13  |  7.66 | 24.80  |  5.23  |
-| PDVC   | C3D  | cfgs/anet_c3d_pdvc.yml |  [Google Drive](https://drive.google.com/drive/folders/1I77miVvThdMenmprgozfRsXDVoc-9TxY?usp=sharing)  |  55.20   |  57.36  | 1.82  |  7.48  |  8.09  | 28.16  |  5.47  |
-| PDVC_light   | TSN | cfgs/anet_tsn_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1hImJ7sXABzS-ycErruLFCE_pkWEHzFSV?usp=sharing)  |  55.34   |  57.97  | 1.66  |  7.41  |  7.97 | 27.23  |  5.51  |
-| PDVC   | TSN  | cfgs/anet_tsn_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1v2Xj0Qjt3Te_SgVyySKEofRaZsSw_rjs?usp=sharing)  |  56.21   |  57.46  | 1.92  |  8.00  |  8.63 | 29.00  |  5.68  |
-| PDVC_light   | TSP | cfgs/anet_tsp_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1Ei8lnBs9Nn2SsFVd7WGe2iJERo46izv8?usp=sharing)  |  55.24   |  57.78  | 1.77  |  7.94  |  8.55 | 28.25  |  5.95  |
-| PDVC   | TSP  | cfgs/anet_tsp_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1sX5wTk1hBgR_a5YUzpxFCrzwkZQXiIab?usp=sharing)  |  55.79   |  57.39  | 2.17  |  8.37  |  9.03 | 31.14  |  6.05  |
+| PDVC_light   | C3D  | cfgs/anet_c3d_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/16ZEYpEwRXOpCYD9_jjctqzSrIz0EsAyF?usp=drive_link)  |  55.30   |  58.42  | 1.55  |  7.13  |  7.66 | 24.80  |  5.23  |
+| PDVC   | C3D  | cfgs/anet_c3d_pdvc.yml |  [Google Drive](https://drive.google.com/drive/folders/1o7zJncJYF1S3jLeuFTk2JE8rljSNq6Sl?usp=drive_link)  |  55.20   |  57.36  | 1.82  |  7.48  |  8.09  | 28.16  |  5.47  |
+| PDVC_light   | TSN | cfgs/anet_tsn_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1btfP9i6VDz1Hle2cpVqBzxizlc_Ecrg-?usp=drive_link)  |  55.34   |  57.97  | 1.66  |  7.41  |  7.97 | 27.23  |  5.51  |
+| PDVC   | TSN  | cfgs/anet_tsn_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1J0Z0pjhb6x-fAhxEUKuPApsWUFdObFMo?usp=sharing)  |  56.21   |  57.46  | 1.92  |  8.00  |  8.63 | 29.00  |  5.68  |
+| PDVC_light   | TSP | cfgs/anet_tsp_pdvcl.yml | [Google Drive](https://drive.google.com/drive/folders/1f1GGtoT1kPFP6ZS-RKkORiMlRXBX06Ug?usp=drive_link)  |  55.24   |  57.78  | 1.77  |  7.94  |  8.55 | 28.25  |  5.95  |
+| PDVC   | TSP  | cfgs/anet_tsp_pdvc.yml | [Google Drive](https://drive.google.com/drive/folders/1Y34puRNE0lpbz3i38k1nh8d9E1i3S0i4?usp=drive_link)  |  55.79   |  57.39  | 2.17  |  8.37  |  9.03 | 31.14  |  6.05  |
 
 
 Notes:
