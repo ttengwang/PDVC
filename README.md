@@ -86,7 +86,7 @@ bash download_anet_c3d.sh
 # bash download_i3d_vggish_features.sh
 # bash download_tsp_features.sh
 ```
-The preprocessed C3D features have been uploaded to [baiduyun drive]([https://drive.google.com/drive/folders/15Owgdwc1gJWYf_B9PcDiemq_478r9VJZ?usp=sharing](https://pan.baidu.com/s/1Ehvq1jNiJrhgA00mOG25zQ?pwd=fk2p))
+The preprocessed C3D features have been uploaded to [baiduyun drive](https://pan.baidu.com/s/1Ehvq1jNiJrhgA00mOG25zQ?pwd=fk2p)
 
 ### Dense Video Captioning
 1. PDVC with learnt proposals
