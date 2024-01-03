@@ -1,6 +1,4 @@
 # PDVC
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/end-to-end-dense-video-captioning-with/dense-video-captioning-on-youcook2)](https://paperswithcode.com/sota/dense-video-captioning-on-youcook2?p=end-to-end-dense-video-captioning-with)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/end-to-end-dense-video-captioning-with/dense-video-captioning-on-activitynet)](https://paperswithcode.com/sota/dense-video-captioning-on-activitynet?p=end-to-end-dense-video-captioning-with)
 
 Official implementation for End-to-End Dense Video Captioning with Parallel Decoding (ICCV 2021) 
 
@@ -88,7 +86,7 @@ bash download_anet_c3d.sh
 # bash download_i3d_vggish_features.sh
 # bash download_tsp_features.sh
 ```
-The preprocessed C3D and TSN features have been uploaded to [google drive](https://drive.google.com/drive/folders/15Owgdwc1gJWYf_B9PcDiemq_478r9VJZ?usp=sharing)
+The preprocessed C3D features have been uploaded to [baiduyun drive]([https://drive.google.com/drive/folders/15Owgdwc1gJWYf_B9PcDiemq_478r9VJZ?usp=sharing](https://pan.baidu.com/s/1Ehvq1jNiJrhgA00mOG25zQ?pwd=fk2p))
 
 ### Dense Video Captioning
 1. PDVC with learnt proposals
